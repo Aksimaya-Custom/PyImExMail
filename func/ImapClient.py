@@ -1,6 +1,6 @@
 # Copyright (c) 2023, Kuronekosan
 # This version is still pre-release
-# Check the github for the project
+# Check the github for the project https://github.com/SandyMaull/PyImExMail
 
 import os
 import sys
@@ -14,7 +14,7 @@ from dotenv import load_dotenv
 __version__ = "1.0.0"
 #Check if the system have python > 3.7
 if sys.version_info < (3, 7):
-    print("IMAP Upload requires Python 3.5 or later.")
+    print("This program requires Python 3.7 or later.")
     sys.exit(1)
 #Load .env File
 load_dotenv()
@@ -34,7 +34,7 @@ class ImapClient:
         try:
             imapInit = IMAPClient(host = self.hostname, port = self.port, use_uid = self.use_uidStatus, ssl = self.ssl, timeout = 15)
             login = imapInit.login(username = self.username, password = self.password)
-            print("Berhasil Login!")
+            print("Login Success.")
         except ConnectionResetError:
             raise CustomException.PortError
         except socket.gaierror:

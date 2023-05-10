@@ -1,3 +1,7 @@
+# Copyright (c) 2023, Kuronekosan
+# This version is still pre-release
+# Check the github for the project https://github.com/SandyMaull/PyImExMail
+
 from func.MboxReader import MboxReader
 
 mboxReader = MboxReader('data.mbox')
