@@ -21,3 +21,9 @@ class LoginFailed(Exception):
         # Call the base class constructor with the parameters it needs
         message = "Login Failed, Check Username & Password Configuration."
         super().__init__(message)
+
+class Timeout(Exception):
+    def __init__(self):            
+        # Call the base class constructor with the parameters it needs
+        message = "Connection Timeout, Check Your Connection."
+        super().__init__(message)

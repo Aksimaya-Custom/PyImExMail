@@ -3,42 +3,109 @@
 # Check the github for the project https://github.com/SandyMaull/PyImExMail
 
 import os
-import sys
 import socket
+#FK U IMAPLIB.
+import imaplib
 import imapclient
 from imapclient import IMAPClient
 from func import CustomException
 from dotenv import load_dotenv
 
-# Version of this program
-__version__ = "1.0.0"
-#Check if the system have python > 3.7
-if sys.version_info < (3, 7):
-    print("This program requires Python 3.7 or later.")
-    sys.exit(1)
 #Load .env File
 load_dotenv()
 # Custom Error Message
 imapclient.exceptions.LoginError = CustomException.LoginFailed
 
 class ImapClient:
-    def __init__(self, hostname:str, username:str, password:str, port:int, use_uidStatus:bool, ssl:bool):
+    def __init__(self, hostname:str, username:str, password:str, port:int = 993, use_uidStatus:bool = True, ssl:bool = True):
         self.hostname = hostname
         self.username = username
         self.password = password
         self.port = port
         self.use_uidStatus = use_uidStatus
         self.ssl = ssl
+        self.imap = None
+        #FK U CPANEL.
+        self.cpanel = False
+        self.backFolderName = "imported from PyImExMail"
+        self.isOnFolder = []
 
-    def main(self):
+    def login(self):
         try:
             imapInit = IMAPClient(host = self.hostname, port = self.port, use_uid = self.use_uidStatus, ssl = self.ssl, timeout = 15)
-            login = imapInit.login(username = self.username, password = self.password)
+            imapInit.login(username = self.username, password = self.password)
             print("Login Success.")
+            self.imap = imapInit
+
+            return self.imap
         except ConnectionResetError:
             raise CustomException.PortError
         except socket.gaierror:
             raise CustomException.HostError
+        except TimeoutError:
+            raise CustomException.Timeout
+        except ConnectionRefusedError:
+            raise CustomException.PortError
 
-ujank = ImapClient(os.getenv('IMAP_HOST'), os.getenv('IMAP_USERNAME'), os.getenv('IMAP_PASSWORD'), os.getenv('IMAP_PORT'), True, True)
-ujank.main()
+    def get_list_folders(self):
+        response = self.imap.list_folders()
+        response = [tup[2] for tup in response]
+
+        # THIS TRY & EXCEPT FIXING THE STUPIDITY OF CPANEL.
+        try:
+            if self.backFolderName not in response:
+                self.imap.create_folder(self.backFolderName)
+        except imaplib.IMAP4.error:
+            if ('INBOX.' + self.backFolderName) not in response:
+                self.imap.create_folder("INBOX." + self.backFolderName)
+            self.cpanel = True
+            if "INBOX" not in self.isOnFolder:
+                self.isOnFolder.append("INBOX")
+
+        return response
+
+    def select_folder(self, name, resetFolderAfter = False):
+        self.get_list_folders()
+        print("IsOnFolder Sbelum Select", self.isOnFolder)
+        if self.backFolderName not in self.isOnFolder:
+            self.isOnFolder.append(self.backFolderName)
+        if name not in self.isOnFolder:
+            self.isOnFolder.append(name)
+        response = self.imap.select_folder(".".join(self.isOnFolder))
+        if resetFolderAfter:
+            self.close_folder()
+        print("IsOnFolder Stelah Select", self.isOnFolder)
+
+        return response
+
+    def create_folder(self, name, resetFolderAfter = False):
+        list_folders = self.get_list_folders()
+        print("IsOnFolder Sbelum Create", self.isOnFolder)
+        if self.backFolderName not in self.isOnFolder:
+            self.isOnFolder.append(self.backFolderName)
+        if name not in self.isOnFolder:
+            self.isOnFolder.append(name)
+        if ".".join(self.isOnFolder) not in list_folders:
+            self.imap.create_folder(".".join(self.isOnFolder))
+        response = True
+        if resetFolderAfter:
+            self.close_folder()
+        print("IsOnFolder Stelah Create", self.isOnFolder)
+
+        return response
+
+    def close_folder(self):
+        self.isOnFolder = []
+        if self.cpanel:
+            self.isOnFolder.append('INBOX')
+            self.isOnFolder.append('imported from PyImExMail')
+        else:
+            self.isOnFolder.append('imported from PyImExMail')
+
+    def append_message(self, msg, time, resetFolderAfter = False):
+        print(".".join(self.isOnFolder))
+        self.imap.append(".".join(self.isOnFolder), msg, msg_time=time)
+        if resetFolderAfter:
+            self.close_folder()
+
+        return True

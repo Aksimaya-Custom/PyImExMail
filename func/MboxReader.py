@@ -2,9 +2,10 @@
 # This version is still pre-release
 # Check the github for the project https://github.com/SandyMaull/PyImExMail
 
-import email
-from email.policy import default
 import os
+import email
+import datetime
+from email.policy import default
 
 class MboxReader:
     def __init__(self, filename):
@@ -31,3 +32,8 @@ class MboxReader:
                 lines = []
                 continue
             lines.append(line)
+
+    def parse_date(self, date):
+        response = email.utils.parsedate_to_datetime(date)
+        print(response)
+        return response
