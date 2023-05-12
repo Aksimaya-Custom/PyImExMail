@@ -61,6 +61,7 @@ def main(data, host, user, password, port, ssl):
             ujank.create_folder("Uncategorized" if mbox['X-Gmail-Labels'] is None else mbox['X-Gmail-Labels'].split(',')[0], True)
             ujank.select_folder("Uncategorized" if mbox['X-Gmail-Labels'] is None else mbox['X-Gmail-Labels'].split(',')[0])
             dateParse = mboxReader.parse_date(mbox['Date'])
+            print(mbox['Subject'] + "\n")
             ujank.append_message(mbox.as_string(), dateParse, True)
     print("Email Successfully Imported...")
     sys.exit(0)
