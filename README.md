@@ -24,7 +24,7 @@ In this project im using these:
 Voilà, this program is ready to use, u can see the thread below about how to using it.
 
 ### How to Use
-You can executing ```python main.py -h``` to see how to use this script. :)
-Im planning on creating more function like IMAP to IMAP in the future.
-
+You can executing ```python main.py -h``` to see how to use this script. :)\
+Im planning on creating more function like IMAP to IMAP in the future.\
+\
 You can support me on ko-fi at https://ko-fi.com/kuronekosan1
