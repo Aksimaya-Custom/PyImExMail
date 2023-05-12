@@ -1,5 +1,5 @@
 # Copyright (c) 2023, Kuronekosan
-# This version is still pre-release
+# This version is still alpha-release
 # Check the github for the project https://github.com/SandyMaull/PyImExMail
 
 import os
@@ -75,7 +75,7 @@ if __name__ == "__main__":
         time.sleep(1)
         sys.exit(1)
 
-    print("PyImExMail Upload (v{})\nCopyright (c) 2023, Kuronekosan.\nThis version is still pre-release\nCheck the github for the project https://github.com/SandyMaull/PyImExMail\n".format(__version__))
+    print("PyImExMail Upload (v{})\nCopyright (c) 2023, Kuronekosan.\nThis version is still alpha-release\nCheck the github for the project https://github.com/SandyMaull/PyImExMail\n".format(__version__))
     data = arguments_and_validation()
     result = main(data[0], data[1], data[2], data[3], data[5], data[4])
     sys.stdout.flush()

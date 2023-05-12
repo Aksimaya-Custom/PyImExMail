@@ -1,5 +1,5 @@
 # Copyright (c) 2023, Kuronekosan
-# This version is still pre-release
+# This version is still alpha-release
 # Check the github for the project https://github.com/SandyMaull/PyImExMail
 
 import os

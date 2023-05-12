@@ -1,6 +1,6 @@
 <div align="center">
   <h1>PyImExMail</h1>
-  <code>This is pre-release version. (WIP)</code>
+  <code>This is alpha-release version. (WIP)</code>
   
 </div>
 
