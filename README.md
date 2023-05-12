@@ -19,9 +19,12 @@ In this project im using these:
 - Then you need to create python environment, use ```cd``` to folder PyImExMail, and create the environment using ```python -m venv .```.
 - After that, activate the environment by executing ```activate``` in folder ```Scripts (Windows)``` or ```bin (Linux)```.
 - Then u can use ```pip install -r requirements.txt``` to install all the used libraries in this project.
-- Lastly, copy the ```env_example``` to ```.env``` and configure the data inside it.
+- Lastly, run this script by executing ```python main.py -h``` to check how to use it.
 
 Voilà, this program is ready to use, u can see the thread below about how to using it.
 
 ### How to Use
-This project is still under development, and u cant use anything in here, but u can explore how the code going into :)
+You can executing ```python main.py -h``` to see how to use this script. :)
+Im planning on creating more function like IMAP to IMAP in the future.
+
+You can support me on ko-fi at https://ko-fi.com/kuronekosan1
