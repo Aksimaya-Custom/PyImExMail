@@ -1,6 +1,13 @@
+# Copyright (c) 2023, Kuronekosan
+# This version is still alpha-release
+# Check the github for the project https://github.com/SandyMaull/PyImExMail
+
 import time
 
-def progressBar(iterable, prefix = '', suffix = '', decimals = 1, length = 100, fill = '█', printEnd = "\r"):
+# Generator for Progress Bar
+def progressBar(iterable, suffix = '', decimals = 1, length = 100, fill = '█', printEnd = "\r"):
+    # Thx for the info, i learn a lot about generator and iterator
+    # Love you guys from stackoverflow.
     """
     Call in a loop to create terminal progress bar
     @params:
@@ -14,24 +21,17 @@ def progressBar(iterable, prefix = '', suffix = '', decimals = 1, length = 100, 
     """
     total = len(iterable)
     # Progress Bar Printing Function
-    def printProgressBar (iteration):
+    def printProgressBar(iteration, name):
         percent = ("{0:." + str(decimals) + "f}").format(100 * (iteration / float(total)))
         filledLength = int(length * iteration // total)
         bar = fill * filledLength + '-' * (length - filledLength)
-        print(f'\r{prefix} |{bar}| {percent}% {suffix}', end = printEnd)
+        print(f'\r{name[:7] if len(name) > 7 else name} |{bar}| {percent}% {suffix}', end = printEnd, flush=True)
+
     # Initial Call
-    printProgressBar(0)
+    printProgressBar(0, '')
     # Update Progress Bar
     for i, item in enumerate(iterable):
         yield item
-        printProgressBar(i + 1)
+        printProgressBar(i + 1, item['Subject'])
     # Print New Line on Complete
     print()
-
-# A List of Items
-items = list(range(0, 57))
-
-# A Nicer, Single-Call Usage
-for item in progressBar(items, prefix = 'Progress:', suffix = 'Complete', length = 50):
-    # Do stuff...
-    time.sleep(0.1)

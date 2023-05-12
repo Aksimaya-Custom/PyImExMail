@@ -10,9 +10,10 @@ import argparse
 from getpass import getpass
 from func.MboxReader import MboxReader
 from func.ImapClient import ImapClient
+from func.ProgressBar import progressBar
 
 # Version of this program
-__version__ = "1.2.1"
+__version__ = "1.3.2"
 #Check if the system have python > 3.7
 if sys.version_info < (3, 7):
     print("This program requires Python 3.7 or later.")
@@ -56,11 +57,11 @@ def main(data, host, user, password, port, ssl):
     mboxReader = MboxReader(data)
     print("Now i'll import the MBOX to server, please take a seat and have a good coffee :)")
     with mboxReader as mbox:
-        for message in mbox:
-            ujank.create_folder(message['X-Gmail-Labels'].split(',')[0], True)
-            ujank.select_folder(message['X-Gmail-Labels'].split(',')[0])
-            dateParse = mboxReader.parse_date(message['Date'])
-            ujank.append_message(message.as_string(), dateParse, True)
+        for mbox in progressBar(list(mbox), suffix = 'Complete', length=50):
+            ujank.create_folder("Uncategorized" if mbox['X-Gmail-Labels'] is None else mbox['X-Gmail-Labels'].split(',')[0], True)
+            ujank.select_folder("Uncategorized" if mbox['X-Gmail-Labels'] is None else mbox['X-Gmail-Labels'].split(',')[0])
+            dateParse = mboxReader.parse_date(mbox['Date'])
+            ujank.append_message(mbox.as_string(), dateParse, True)
     print("Email Successfully Imported...")
     sys.exit(0)
 
