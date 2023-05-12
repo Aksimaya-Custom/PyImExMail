@@ -54,12 +54,15 @@ def main(data, host, user, password, port, ssl):
     ujank = ImapClient(host, user, password, port, True, ssl)
     ujank.login()
     mboxReader = MboxReader(data)
+    print("Now i'll import the MBOX to server, please take a seat and have a good coffee :)")
     with mboxReader as mbox:
         for message in mbox:
             ujank.create_folder(message['X-Gmail-Labels'].split(',')[0], True)
             ujank.select_folder(message['X-Gmail-Labels'].split(',')[0])
             dateParse = mboxReader.parse_date(message['Date'])
             ujank.append_message(message.as_string(), dateParse, True)
+    print("Email Successfully Imported...")
+    sys.exit(0)
 
 
 if __name__ == "__main__":
