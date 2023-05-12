@@ -35,5 +35,4 @@ class MboxReader:
 
     def parse_date(self, date):
         response = email.utils.parsedate_to_datetime(date)
-        print(response)
         return response

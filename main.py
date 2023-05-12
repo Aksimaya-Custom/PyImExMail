@@ -6,45 +6,68 @@ import os
 import sys
 import time
 import platform
+import argparse
+from getpass import getpass
 from func.MboxReader import MboxReader
 from func.ImapClient import ImapClient
 
 # Version of this program
-__version__ = "1.0.0"
+__version__ = "1.2.1"
 #Check if the system have python > 3.7
 if sys.version_info < (3, 7):
     print("This program requires Python 3.7 or later.")
     sys.exit(1)
 
-def check_platform():
-    return "Windows" if platform.system() == "Windows" else "Linux" if platform.system() == "Windows" else "Unknown"
+def arguments_and_validation():
+    msg = "Export Import E-Mail with Python."
+ 
+    # Initialize parser
+    parser = argparse.ArgumentParser(description = msg)
 
+    # Adding optional argument
+    parser.add_argument("-d", "--Data", help = "Select Mbox Data", required=True)
+    parser.add_argument("-ho", "--Host", help = "Define the IMAP Host", required=True)
+    parser.add_argument("-u", "--User", help = "Define the IMAP Username", required=True)
+    parser.add_argument("-s", "--ssl", help = "Use SSL for connection (Optional)", action='store_true')
+    parser.add_argument("-p", "--Port", help = "Define the IMAP Port (Optional)")
+    args = parser.parse_args()
 
-def main():
-    ujank = ImapClient(os.getenv('IMAP_HOST'), os.getenv('IMAP_USERNAME'), os.getenv('IMAP_PASSWORD'), os.getenv('IMAP_PORT'), True, True)
+    password = getpass()
+    data = args.Data
+    host = args.Host
+    user = args.User
+    ssl = args.ssl if args.ssl else False
+    port = args.Port if args.Port else 993 if ssl else 143
+    port = int(port)
+
+    if os.path.exists(data) is False:
+        print("Data is not found.")
+        sys.exit(1)
+
+    if data.lower().endswith('.mbox') is False:
+        print("Data is not MBOX format.")
+        sys.exit(1)
+
+    return data, host, user, password, ssl, port
+
+def main(data, host, user, password, port, ssl):
+    ujank = ImapClient(host, user, password, port, True, ssl)
     ujank.login()
-    mboxReader = MboxReader('second.mbox')
+    mboxReader = MboxReader(data)
     with mboxReader as mbox:
         for message in mbox:
-            # print(message['X-Gmail-Labels'].split(',')[0] + "\n")
-            # print(message['Date'] + "\n")
-            # print(message.as_string() + "\n\n")
             ujank.create_folder(message['X-Gmail-Labels'].split(',')[0], True)
             ujank.select_folder(message['X-Gmail-Labels'].split(',')[0])
             dateParse = mboxReader.parse_date(message['Date'])
             ujank.append_message(message.as_string(), dateParse, True)
 
 
-
-
-
-
 if __name__ == "__main__":
     # Main Execute
-    if check_platform() == 'Windows':
+    if platform.system() == 'Windows':
         clear = lambda: os.system('cls')
         clear()
-    elif check_platform() == 'Linux':
+    elif platform.system() == 'Linux':
         clear = lambda: os.system('clear')
         clear()
     else:
@@ -52,7 +75,8 @@ if __name__ == "__main__":
         time.sleep(1)
         sys.exit(1)
 
-    print("PyImExMail Upload (v{})".format(__version__))
-    result = main()
+    print("PyImExMail Upload (v{})\nCopyright (c) 2023, Kuronekosan.\nThis version is still pre-release\nCheck the github for the project https://github.com/SandyMaull/PyImExMail\n".format(__version__))
+    data = arguments_and_validation()
+    result = main(data[0], data[1], data[2], data[3], data[5], data[4])
     sys.stdout.flush()
     sys.exit(result)

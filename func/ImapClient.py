@@ -9,10 +9,7 @@ import imaplib
 import imapclient
 from imapclient import IMAPClient
 from func import CustomException
-from dotenv import load_dotenv
 
-#Load .env File
-load_dotenv()
 # Custom Error Message
 imapclient.exceptions.LoginError = CustomException.LoginFailed
 
@@ -66,7 +63,6 @@ class ImapClient:
 
     def select_folder(self, name, resetFolderAfter = False):
         self.get_list_folders()
-        print("IsOnFolder Sbelum Select", self.isOnFolder)
         if self.backFolderName not in self.isOnFolder:
             self.isOnFolder.append(self.backFolderName)
         if name not in self.isOnFolder:
@@ -74,13 +70,11 @@ class ImapClient:
         response = self.imap.select_folder(".".join(self.isOnFolder))
         if resetFolderAfter:
             self.close_folder()
-        print("IsOnFolder Stelah Select", self.isOnFolder)
 
         return response
 
     def create_folder(self, name, resetFolderAfter = False):
         list_folders = self.get_list_folders()
-        print("IsOnFolder Sbelum Create", self.isOnFolder)
         if self.backFolderName not in self.isOnFolder:
             self.isOnFolder.append(self.backFolderName)
         if name not in self.isOnFolder:
@@ -90,7 +84,6 @@ class ImapClient:
         response = True
         if resetFolderAfter:
             self.close_folder()
-        print("IsOnFolder Stelah Create", self.isOnFolder)
 
         return response
 
@@ -103,7 +96,6 @@ class ImapClient:
             self.isOnFolder.append('imported from PyImExMail')
 
     def append_message(self, msg, time, resetFolderAfter = False):
-        print(".".join(self.isOnFolder))
         self.imap.append(".".join(self.isOnFolder), msg, msg_time=time)
         if resetFolderAfter:
             self.close_folder()
