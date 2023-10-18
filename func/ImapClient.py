@@ -24,7 +24,7 @@ class ImapClient:
         self.imap = None
         #FK U CPANEL.
         self.cpanel = False
-        self.backFolderName = "imported from PyImExMail"
+        self.backFolderName = "Imported by Aksimaya"
         self.isOnFolder = []
 
     def login(self):
@@ -91,9 +91,9 @@ class ImapClient:
         self.isOnFolder = []
         if self.cpanel:
             self.isOnFolder.append('INBOX')
-            self.isOnFolder.append('imported from PyImExMail')
+            self.isOnFolder.append(self.backFolderName)
         else:
-            self.isOnFolder.append('imported from PyImExMail')
+            self.isOnFolder.append(self.backFolderName)
 
     def append_message(self, msg, time, resetFolderAfter = False):
         self.imap.append(".".join(self.isOnFolder), msg, msg_time=time)
