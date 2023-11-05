@@ -52,20 +52,20 @@ def arguments_and_validation():
     return data, host, user, password, ssl, port
 
 def main(data, host, user, password, port, ssl):
-    ujank = ImapClient(host, user, password, port, True, ssl)
-    ujank.login()
+    client = ImapClient(host, user, password, port, True, ssl)
+    client.login()
     mboxReader = MboxReader(data)
     print("Now i'll import the MBOX to server, please take a seat and have a good coffee :)")
     with mboxReader as mbox:
         for mbox in progressBar(list(mbox), suffix = 'Complete', length=50):
-            ujank.create_folder("Uncategorized" if mbox['X-Gmail-Labels'] is None else mbox['X-Gmail-Labels'].split(',')[0], True)
-            ujank.select_folder("Uncategorized" if mbox['X-Gmail-Labels'] is None else mbox['X-Gmail-Labels'].split(',')[0])
+            client.create_folder("Uncategorized" if mbox['X-Gmail-Labels'] is None else mbox['X-Gmail-Labels'].split(',')[0], True)
+            client.select_folder("Uncategorized" if mbox['X-Gmail-Labels'] is None else mbox['X-Gmail-Labels'].split(',')[0])
             dateParse = mboxReader.parse_date(mbox['Date'])
             # print(mbox['Subject'] + "\n")
             try:
-                ujank.append_message(mbox.as_string(), dateParse, True)
+                client.append_message(mbox.as_string(), dateParse, True)
             except:
-                ujank.append_message(mbox.as_bytes(), dateParse, True)
+                client.append_message(mbox.as_bytes(), dateParse, True)
     print("Email Successfully Imported...")
     sys.exit(0)
 

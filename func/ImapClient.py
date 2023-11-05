@@ -24,7 +24,7 @@ class ImapClient:
         self.imap = None
         #FK U CPANEL.
         self.cpanel = False
-        self.backFolderName = "Imported by Aksimaya"
+        self.backFolderName = "Imported by PyImExMail"
         self.isOnFolder = []
 
     def login(self):

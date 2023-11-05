@@ -4,7 +4,8 @@
   
 </div>
 
-
+## What is this
+An python-based apps for importing Mbox file into Mail server using SMTP authentication.
 
 ## Tech Stacks
 
